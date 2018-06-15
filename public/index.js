@@ -4,6 +4,8 @@ const app = function() {
 
   const cityButton = document.querySelector('#city');
   cityButton.addEventListener('click', function() {
+
+    const city = document.querySelector('#selected-city').value;
     makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?city=${city}&size=100&apikey=${TicketMasterAPIKey}`, ticketMasterData);
   })
 }
@@ -23,6 +25,7 @@ const ticketMasterData = function () {
 
 const populateList = function(events) {
   const eventSection = document.querySelector('#event-list');
+  eventSection.innerHTML = '';
   events.forEach(function(event) {
     const newEvent = createIndividualEvent(event);
     eventSection.appendChild(newEvent);
@@ -30,7 +33,6 @@ const populateList = function(events) {
 }
 
 const createIndividualEvent = function(event) {
-  console.log(event['_embedded'].venues[0].name);
   const div = document.createElement('div');
   div.classList.add('event')
   const artistName = document.createElement('h3');
