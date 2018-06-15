@@ -1,13 +1,16 @@
 const app = function() {
   TicketMasterAPIKey =  // Insert Your API Key Here
   const city = 'Glasgow'
-  makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?city=${city}&size=200&apikey=${TicketMasterAPIKey}`, ticketMasterData);
+
+  const cityButton = document.querySelector('#city');
+  cityButton.addEventListener('click', function() {
+    makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?city=${city}&size=200&apikey=${TicketMasterAPIKey}`, ticketMasterData);
+  })
 }
 
 const makeRequest = function(url, callback) {
   const request = new XMLHttpRequest();
   request.open('GET', url);
-  request.setRequestHeader('Connection', 'Keep-Alive');
   request.addEventListener('load', callback, true);
   request.send();
 }
