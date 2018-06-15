@@ -4,7 +4,7 @@ const app = function() {
 
   const cityButton = document.querySelector('#city');
   cityButton.addEventListener('click', function() {
-    makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?city=${city}&size=200&apikey=${TicketMasterAPIKey}`, ticketMasterData);
+    makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?city=${city}&size=100&apikey=${TicketMasterAPIKey}`, ticketMasterData);
   })
 }
 
@@ -17,10 +17,31 @@ const makeRequest = function(url, callback) {
 
 const ticketMasterData = function () {
   if (this.status !== 200) return;
-  const allEvents = JSON.parse(this.response);
-  console.log(allEvents);
+  const events = JSON.parse(this.response)['_embedded'].events;
+  populateList(events);
 }
 
+const populateList = function(events) {
+  const eventSection = document.querySelector('#event-list');
+  events.forEach(function(event) {
+    const newEvent = createIndividualEvent(event);
+    eventSection.appendChild(newEvent);
+  });
+}
+
+const createIndividualEvent = function(event) {
+  console.log(event['_embedded'].venues[0].name);
+  const div = document.createElement('div');
+  div.classList.add('event')
+  const artistName = document.createElement('h3');
+  artistName.textContent = event.name;
+  const venue = document.createElement('h4');
+  venue.textContent = event['_embedded'].venues[0].name;
+
+  div.appendChild(artistName);
+  div.appendChild(venue);
+  return div
+}
 
 
 window.addEventListener('load', app);
