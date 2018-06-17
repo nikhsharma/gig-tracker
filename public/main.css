@@ -1,0 +1,49 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+}
+
+.event {
+  border: 1px solid black;
+  margin: 0;
+}
+
+#header {
+  height: 10vh;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+#event-list {
+  display: flex;
+  flex-direction: column;
+  justify-content:
+  margin: 0;
+  padding: 0;
+  height: 90vh;
+  overflow-x: scroll;
+  width: 49vw;
+  float: left;
+}
+
+#map {
+  height: 45vh;
+  width: 50vw;
+  float: right;
+  margin: 0;
+  padding: 0;
+}
+
+#selected {
+  border: 1px solid black;
+  height: 45vh;
+  width: 50vw;
+  float: right;
+  margin: 0;
+  padding: 0;
+}
