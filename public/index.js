@@ -37,8 +37,7 @@ const populateList = function(events) {
   const eventSection = document.querySelector('#event-list');
   eventSection.innerHTML = '';
   events.forEach(function(event) {
-    const newEvent = createIndividualEvent(event);
-    eventSection.appendChild(newEvent);
+    eventSection.appendChild(createIndividualEvent(event));
   });
 }
 
@@ -46,23 +45,63 @@ const createIndividualEvent = function(event) {
   const div = document.createElement('div');
   div.classList.add('event')
 
+  div.appendChild(createArtistName(event));
+  div.appendChild(createVenue(event));
+  div.appendChild(createDate(event));
+  div.appendChild(createButton(event));
+
+  return div
+}
+
+const createArtistName = function(event) {
   const artistName = document.createElement('h3');
   artistName.textContent = event.name;
+  return artistName;
+}
 
+const createVenue = function(event) {
   const venue = document.createElement('h4');
   venue.textContent = event['_embedded'].venues[0].name;
+  return venue;
+}
 
+const createDate = function(event) {
   const year = event['dates'].start['localDate'].substr(0,4);
   const month = event['dates'].start['localDate'].substr(5,2);
   const day = event['dates'].start['localDate'].substr(8,2);
   const date = document.createElement('p');
   date.textContent = `${day}/${month}/${year}`;
+  return date;
+}
 
+const createButton = function(event) {
+  const button = document.createElement('button');
+  button.textContent = 'Show More'
+  button.addEventListener('click', function() {
+    const selected = document.querySelector('#selected');
+    populateSelected(selected, event);
+  })
+  return button;
+}
 
-  div.appendChild(artistName);
-  div.appendChild(venue);
-  div.appendChild(date);
-  return div
+const populateSelected = function(selected, event) {
+  selected.innerHTML = '';
+  selected.appendChild(createArtistName(event));
+  if (event['_embedded'].attractions) {
+    selected.appendChild(createArtistImg(event));
+  }
+  selected.appendChild(createVenue(event));
+    selected.appendChild(createDate(event));
+  return selected;
+}
+
+const createArtistImg = function(event) {
+  const img = document.createElement('img');
+  if (event['_embedded'].attractions[0].images) {
+    img.src = event['_embedded'].attractions[0].images[0].url;
+    img.height = 100;
+  }
+  return img;
 }
 
 const moveMap = function(coords) {
@@ -72,10 +111,12 @@ const moveMap = function(coords) {
 const populateMarkers = function(events) {
   for (let key in events) {
     console.log(events[key]['_embedded'].venues[0]);
-    const coords = [events[key]['_embedded'].venues[0].location.latitude, events[key]['_embedded'].venues[0].location.longitude];
-    mainMap.addMarker(coords, events[key]['_embedded'].venues[0]);
+    if (events[key]['_embedded'].venues[0].location) {
+      const coords = [events[key]['_embedded'].venues[0].location.latitude, events[key]['_embedded'].venues[0].location.longitude];
+      mainMap.addMarker(coords, events[key]['_embedded'].venues[0]);
+      console.log(events[key]['_embedded'].venues.length);
+    }
   }
 }
-
 
 window.addEventListener('load', app);
