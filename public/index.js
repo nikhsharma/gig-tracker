@@ -29,7 +29,6 @@ const ticketMasterData = function () {
   populateList(events);
   moveMap(events[0]['_embedded'].venues[0].location);
   populateMarkers(events);
-  // console.log(Geohash.encode(events[0]['_embedded'].venues[0].location.longitude, events[0]['_embedded'].venues[0].location.latitude,4));
 }
 
 const populateList = function(events) {
@@ -128,8 +127,6 @@ const populateMarkers = function(events) {
       venueLink.addEventListener('click', function() {
         makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${events[key]['_embedded'].venues[0].id}&size=${events[key]['_embedded'].venues[0].upcomingEvents._total}&sort=date,asc&classificationName=music&apikey=${TicketMasterAPIKey}`, ticketMasterData)
       })
-
-      // const venueLink = events[key]['_embedded'].venues[0].upcomingEvents._total
       mainMap.addMarker(coords, events[key]['_embedded'].venues[0], venueLink);
     }
   }

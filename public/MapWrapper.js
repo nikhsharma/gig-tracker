@@ -12,6 +12,4 @@ MapWrapper.prototype.showCity = function(coords) {
 
 MapWrapper.prototype.addMarker = function(coords, venue, venueLink) {
   L.marker(coords, {title: venue.name}).addTo(this.map).bindPopup(venueLink);
-  // const marker = L.marker(coords, ).addTo(this.map)
-
 }
