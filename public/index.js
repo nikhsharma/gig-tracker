@@ -1,5 +1,5 @@
 const app = function() {
-  TicketMasterAPIKey =  // Insert Your API Key Here
+  TicketMasterAPIKey = // Insert Your API Key Here
   const city = 'Glasgow'
 
   const mapDiv = document.querySelector('#map');
@@ -29,7 +29,6 @@ const ticketMasterData = function () {
   populateList(events);
   moveMap(events[0]['_embedded'].venues[0].location);
   populateMarkers(events);
-  console.log(events);
   // console.log(Geohash.encode(events[0]['_embedded'].venues[0].location.longitude, events[0]['_embedded'].venues[0].location.latitude,4));
 }
 
@@ -44,7 +43,9 @@ const populateList = function(events) {
 const createIndividualEvent = function(event) {
   const div = document.createElement('div');
   div.classList.add('event')
-
+  if (event['_embedded'].venues[0].images) {
+    div.style.background = event['_embedded'].venues[0].images[0];
+  }
   div.appendChild(createArtistName(event));
   div.appendChild(createVenue(event));
   div.appendChild(createDate(event));
@@ -90,8 +91,17 @@ const populateSelected = function(selected, event) {
   if (event['_embedded'].attractions) {
     selected.appendChild(createArtistImg(event));
   }
+
+
   selected.appendChild(createVenue(event));
-    selected.appendChild(createDate(event));
+  const button = document.createElement('button');
+  button.textContent = `All Events Here (${event['_embedded'].venues[0].upcomingEvents._total})`
+  button.addEventListener('click', function() {
+    makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${event['_embedded'].venues[0].id}&size=${event['_embedded'].venues[0].upcomingEvents._total}&sort=date,asc&classificationName=music&apikey=${TicketMasterAPIKey}`, ticketMasterData)
+  })
+  selected.appendChild(button);
+  selected.appendChild(createDate(event));
+
   return selected;
 }
 
@@ -110,11 +120,17 @@ const moveMap = function(coords) {
 
 const populateMarkers = function(events) {
   for (let key in events) {
-    console.log(events[key]['_embedded'].venues[0]);
     if (events[key]['_embedded'].venues[0].location) {
       const coords = [events[key]['_embedded'].venues[0].location.latitude, events[key]['_embedded'].venues[0].location.longitude];
-      mainMap.addMarker(coords, events[key]['_embedded'].venues[0]);
-      console.log(events[key]['_embedded'].venues.length);
+
+      const venueLink = document.createElement('button');
+      venueLink.textContent = `${events[key]['_embedded'].venues[0].name}: Show All Events Here (${events[key]['_embedded'].venues[0].upcomingEvents._total})`;
+      venueLink.addEventListener('click', function() {
+        makeRequest(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${events[key]['_embedded'].venues[0].id}&size=${events[key]['_embedded'].venues[0].upcomingEvents._total}&sort=date,asc&classificationName=music&apikey=${TicketMasterAPIKey}`, ticketMasterData)
+      })
+
+      // const venueLink = events[key]['_embedded'].venues[0].upcomingEvents._total
+      mainMap.addMarker(coords, events[key]['_embedded'].venues[0], venueLink);
     }
   }
 }

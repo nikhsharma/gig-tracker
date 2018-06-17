@@ -10,8 +10,8 @@ MapWrapper.prototype.showCity = function(coords) {
   this.map.flyTo(coords, 11);
 }
 
-MapWrapper.prototype.addMarker = function(coords, venue) {
-  L.marker(coords, {title: venue.name}).addTo(this.map).bindPopup(venue.name);
+MapWrapper.prototype.addMarker = function(coords, venue, venueLink) {
+  L.marker(coords, {title: venue.name}).addTo(this.map).bindPopup(venueLink);
   // const marker = L.marker(coords, ).addTo(this.map)
 
 }
